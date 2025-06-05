@@ -3,6 +3,7 @@ from datetime import datetime
 
 DB_NAME = "episteme.db"
 
+
 def create_tables(conn):
     cursor = conn.cursor()
 
@@ -52,11 +53,13 @@ def create_tables(conn):
 
     conn.commit()
 
+
 def main():
     conn = sqlite3.connect(DB_NAME)
     create_tables(conn)
     conn.close()
     print(f"[✓] Initialized database: {DB_NAME}")
+
 
 if __name__ == "__main__":
     main()
