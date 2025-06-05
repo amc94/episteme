@@ -4,3 +4,11 @@ target-version = "py312"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+
+[project]
+name = "episteme"
+version = "0.1.0"
+dependencies = [
+    "pydantic>=2.11.5",
+    "requests>=2.32.3",
+]

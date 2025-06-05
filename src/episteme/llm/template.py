@@ -1,21 +1,17 @@
-PROMPT_TEMPLATE = """
-Given the task: "{task}"
+# template.py
 
-List the minimal prerequisite concepts someone would need to understand in order to perform this task effectively.
+HEADERS = {
+    "default": "Given a task, output its prerequisite concepts in JSON.",
+    "concise": "Output prerequisite concepts for this task.",
+    "elaborate": "You are a curriculum planner. Analyze the task and list all prerequisite concepts in JSON format.",
+}
 
-Return format:
-{"concepts": ["concept1", "concept2", ...]}
-""".strip()
+RETURN_FORMAT = 'Return format: { "concepts": [...] }'
 
 
-def build_prompt(task: str) -> str:
-    """
-    Constructs a prompt string by injecting a task description into the template.
+def build_prompt(task: str, header_type: str = "default") -> str:
+    if header_type not in HEADERS:
+        raise ValueError(f"Unknown header_type: {header_type}")
 
-    Args:
-        task (str): The user-defined task.
-
-    Returns:
-        str: A fully formatted prompt string.
-    """
-    return PROMPT_TEMPLATE.format(task=task)
+    header = HEADERS[header_type]
+    return f"{header}\nTask: {task}\n{RETURN_FORMAT}"
