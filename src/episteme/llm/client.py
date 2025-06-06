@@ -5,6 +5,7 @@ from typing import Dict, List
 
 from .template import build_prompt
 
+
 class ConceptResponse(BaseModel):
     concepts: List[str]
 
@@ -43,11 +44,7 @@ class Client:
         raise ValueError("Max retries exceeded without valid response")
 
     def _call(self, prompt: str) -> str:
-        payload = {
-            "model": self.model_name,
-            "prompt": prompt,
-            "stream": False
-        }
+        payload = {"model": self.model_name, "prompt": prompt, "stream": False}
         try:
             response = requests.post(self.api_url, json=payload, timeout=10)
             response.raise_for_status()

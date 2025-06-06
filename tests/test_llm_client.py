@@ -6,6 +6,7 @@ from episteme.llm.client import Client
 
 client = Client(api_url="http://mocked")
 
+
 @patch("episteme.llm.client.requests.post")
 def test_valid_prompt_and_response(mock_post):
     mock_post.return_value.status_code = 200
@@ -48,7 +49,7 @@ def test_malformed_json_raises(mock_post):
 def test_missing_concepts_key(mock_post):
     mock_post.side_effect = [
         Mock(status_code=200, text='{"something_else": ["irrelevant"]}'),
-        Mock(status_code=200, text='{"concepts": ["sets", "functions"]}')
+        Mock(status_code=200, text='{"concepts": ["sets", "functions"]}'),
     ]
 
     result = client.get_concepts("Study discrete math")
@@ -60,7 +61,7 @@ def test_missing_concepts_key(mock_post):
 def test_concepts_not_a_list(mock_post):
     mock_post.side_effect = [
         Mock(status_code=200, text='{"concepts": "eternity"}'),
-        Mock(status_code=200, text='{"concepts": ["infinity"]}')
+        Mock(status_code=200, text='{"concepts": ["infinity"]}'),
     ]
 
     result = client.get_concepts("internals of my mind")
