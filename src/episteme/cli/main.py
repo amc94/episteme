@@ -1,6 +1,13 @@
 from argparse import ArgumentParser
 from episteme.logic import Planner
 
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
 
 def get_parser() -> ArgumentParser:
     parser = ArgumentParser()

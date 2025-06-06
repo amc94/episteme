@@ -1,9 +1,12 @@
+import logging
 import requests
 
 from pydantic import BaseModel, ValidationError
 from typing import Dict, List
 
 from .template import build_prompt
+
+logger = logging.getLogger(__name__)
 
 
 class ConceptResponse(BaseModel):
@@ -30,8 +33,6 @@ class Client:
         self.header_type = header_type
 
     def get_concepts(self, task: str) -> List[str]:
-        if len(task) > 200:
-            raise ValueError()
         prompt = self._build_prompt(task)
 
         for _ in range(self.max_retries):
@@ -44,12 +45,15 @@ class Client:
         raise ValueError("Max retries exceeded without valid response")
 
     def _call(self, prompt: str) -> str:
+        logger.debug(f"Sending prompt: {prompt}")
         payload = {"model": self.model_name, "prompt": prompt, "stream": False}
         try:
             response = requests.post(self.api_url, json=payload, timeout=10)
+            logger.debug(f"Response code: {response.status_code}")
             response.raise_for_status()
             return response.text
         except requests.RequestException as e:
+            logger.exception(f"LLM Call failed with: {e}")
             return "{}"
 
     def _parse_response(self, response_json: str) -> List[str] | None:
