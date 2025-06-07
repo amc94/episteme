@@ -1,10 +1,9 @@
 import logging
 import requests
 
+from episteme.prompt import PromptBuilder
 from pydantic import BaseModel, ValidationError
 from typing import Dict, List
-
-from .template import build_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +23,7 @@ class Client:
         self.model_name = model_name
         self.max_retries = max_retries
         self.api_url = api_url
-
-        try:
-            build_prompt("dummy", header_type)
-        except ValueError:
-            raise ValueError("Invalid header type")
-
+        self.prompt = PromptBuilder()
         self.header_type = header_type
 
     def get_concepts(self, task: str) -> List[str]:
@@ -61,9 +55,9 @@ class Client:
             print(f"Checking response_json: f{response_json}")
             parsed = ConceptResponse.model_validate_json(response_json)
             print(f"Checking parsing: {parsed}")
-            return parsed.concepts
+            return parsed.response
         except ValidationError:
             return None
 
     def _build_prompt(self, task: str) -> str:
-        return build_prompt(task, self.header_type)
+        return self.prompt.build_prompt("task", task)

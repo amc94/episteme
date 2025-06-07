@@ -15,9 +15,18 @@ description = "CLI knowledge planner using LLMs"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "pydantic>=2.11.5",
-    "requests>=2.32.3",
+    "coverage >=7.8.2",
+    "jinja2 >=3.1.6",
+    "pydantic >=2.11.5",
+    "pydantic-core >=2.33.2",
+    "pytest >=8.4.0",
+    "pytest-cov>=6.1.1",
+    "requests >=2.32.3",
+    "ruff >=0.11.12"
 ]
 
 [project.scripts]
 episteme = "episteme.cli.main:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

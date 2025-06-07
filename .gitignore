@@ -194,3 +194,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 uv.lock
+
+review_sessions
