@@ -1,0 +1,14 @@
+{{ header }}
+
+{% if few_shot_examples %}
+{{ few_shot_examples }}
+{% endif %}
+
+{{ instructions }}
+
+{% if cot_scaffold %}
+{{ cot_scaffold }}
+{% endif %}
+
+Task: {{ task }}
+Response:
