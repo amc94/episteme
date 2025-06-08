@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock
 
 from episteme.logic import Planner
-
+from episteme.models import Concept
 
 def test_add_task_returns_concepts():
     mock_client = Mock()
@@ -11,7 +11,8 @@ def test_add_task_returns_concepts():
     planner = Planner(client=mock_client)
     result = planner.add_task("build a car")
 
-    assert result == ["engine", "aerodynamics"]
+    expected_result = [Concept(item) for item in  ["engine", "aerodynamics"]]
+    assert result == expected_result
     mock_client.get_concepts.assert_called_once_with("build a car")
 
 

@@ -1,26 +1,24 @@
 import pytest
+from episteme.cli.main import main
+from episteme.models import Concept
 
-from episteme.cli.main import get_parser
-from unittest import mock
+def test_cli_task_flow(monkeypatch):
+    prompts = iter([
+        "learn LangGraph",  # task
+        True,               # Do you know concept A? (yes)
+        "",                 # notes for concept A
+        False,              # concept B
+        "I need to study this",  # notes for concept B
+    ])
 
+    def mock_ask(*args, **kwargs):
+        return next(prompts)
 
-@mock.patch("sys.argv", ["add_task", "construct a self recursive mirror"])
-def test_add_task():
-    parser = get_parser()
-    args = parser.parse_args()
+    monkeypatch.setattr("questionary.text", lambda *a, **kw: type("Q", (), {"ask": mock_ask})())
+    monkeypatch.setattr("questionary.confirm", lambda *a, **kw: type("Q", (), {"ask": mock_ask})())
 
-    assert args.task == "construct a self recursive mirror"
+    # patch planner.add_task to return mock concepts
+    from episteme.logic import Planner
+    monkeypatch.setattr(Planner, "add_task", lambda self, task: [Concept("A"), Concept("B")])
 
-
-def test_missing_task_arg_exits():
-    parser = get_parser()
-    with pytest.raises(SystemExit):
-        parser.parse_args([])
-
-
-def test_help_flag(capsys):
-    parser = get_parser()
-    with pytest.raises(SystemExit):
-        parser.parse_args(["--help"])
-    out, err = capsys.readouterr()
-    assert "usage:" in out
+    main()

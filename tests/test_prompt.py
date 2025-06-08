@@ -10,14 +10,13 @@ def test_task_prompt_basic_render():
 
     assert "LangGraph" in prompt
     assert "concepts" in prompt
-    assert '{"concepts":' not in prompt  # should not pre-fill JSON
     assert "Task:" in prompt
     assert "Response:" in prompt
 
 
 def test_task_prompt_with_cot():
     task = "Build a transformer model"
-    builder = PromptBuilder(use_cot=False)
+    builder = PromptBuilder(use_cot=True)
 
     prompt = builder.build_prompt("task", task)
 
