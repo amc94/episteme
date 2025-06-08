@@ -1,4 +1,5 @@
-from argparse import ArgumentParser
+import questionary
+
 from episteme.logic import Planner
 
 import logging
@@ -8,21 +9,18 @@ logging.basicConfig(
 )
 
 
-def get_parser() -> ArgumentParser:
-    parser = ArgumentParser()
-    parser.add_argument("task", action="store", help="task to generate a plan for")
-
-    return parser
-
 
 def main():
-    parser = get_parser()
-    args = parser.parse_args()
-    task = args.task
 
     planner = Planner()
 
+    task = questionary.text("What task would you like to learn?").ask()
+
     concepts = planner.add_task(task)
+
+    for concept in concepts:
+        concept.known = questionary.confirm(f"Do you know {concept.name}?").ask()
+        concept.note = questionary.text(f"Any notes about {concept.name}?").ask()
 
     print(concepts)
 
