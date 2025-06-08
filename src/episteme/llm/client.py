@@ -1,3 +1,4 @@
+import json
 import logging
 import requests
 
@@ -52,11 +53,14 @@ class Client:
 
     def _parse_response(self, response_json: str) -> List[str] | None:
         try:
-            print(f"Checking response_json: f{response_json}")
-            parsed = ConceptResponse.model_validate_json(response_json)
-            print(f"Checking parsing: {parsed}")
-            return parsed.response
-        except ValidationError:
+            logger.debug(f"Checking response_json: f{response_json}")
+            outer = json.loads(response_json)
+            inner = outer["response"]
+            parsed = ConceptResponse.model_validate_json(inner)
+            logger.debug(f"Checking parsing: {parsed}")
+            return parsed.concepts
+        except (ValidationError, KeyError, json.JSONDecodeError) as e:
+            logger.exception(f"Parse error: {e}")
             return None
 
     def _build_prompt(self, task: str) -> str:
